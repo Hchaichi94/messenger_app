@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 import HomePage from './containers/HomePage'
 import LoginPage from './containers/LoginPage'
 import RegisterPage from './containers/RegisterPage'
 import PrivateRoute from './components/PrivateRoute'
+import { isLoggedInUser } from './actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
+
+  const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch()
+
+
+  useEffect(() => {
+    if (!auth.authenticated) {
+      dispatch(isLoggedInUser())
+    }
+  }, []);
+
   return (
     <div className="App">
       <Router>
