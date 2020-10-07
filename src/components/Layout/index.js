@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Header from '../Header'
 /**
 * @author
 * @function LayoutPage
@@ -8,9 +8,8 @@ import React from 'react'
 const LayoutPage = (props) => {
     return (
         <div>
-            <header>
-                header{props.children}
-            </header>
+            <Header />
+            {props.children}
         </div>
     )
 

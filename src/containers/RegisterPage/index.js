@@ -1,4 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Layout from '../../components/Layout'
+import Card from '../../components/UI/Card'
+import './style.css'
+import { signup } from '../../actions'
+import { useDispatch } from 'react-redux'
 
 /**
 * @author
@@ -6,8 +11,63 @@ import React from 'react'
 **/
 
 const RegisterPage = (props) => {
+
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const dispatch = useDispatch()
+
+    const registerUser = (e) => {
+        e.preventDefault()
+        const user = {
+            firstName, lastName, email, password
+        }
+        dispatch(signup(user))
+    }
+
     return (
-        <div>RegisterPage</div>
+        <Layout>
+            <div className="registerContainer">
+                <Card>
+                    <form onSubmit={registerUser}>
+                        <h3>SignUp</h3>
+                        <input
+                            name="firstName"
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="firstName"
+                        />
+                        <input
+                            name="lastName"
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="lastName"
+                        />
+                        <input
+                            name="email"
+                            type="text"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="email"
+                        />
+                        <input
+                            name="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="password"
+                        />
+                        <div>
+                            <button>SignUp</button>
+                        </div>
+                    </form>
+                </Card>
+            </div>
+        </Layout>
     )
 
 }
