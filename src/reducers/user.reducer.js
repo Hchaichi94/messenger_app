@@ -6,7 +6,6 @@ const intiState = {
 }
 
 export default (state = intiState, action) => {
-
     switch (action.type) {
         case `${userConstants.GET_REALTIME_USERS}_REQUEST`:
             break;
@@ -28,10 +27,7 @@ export default (state = intiState, action) => {
                 conversations: []
             }
             break;
-
     }
-
-
     return state;
 
 }

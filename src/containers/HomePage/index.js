@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../components/Layout'
 import './style.css';
-import { getRealtimeUsers } from '../../actions';
+import { getRealtimeUsers, updateMessage, getRealtimeConversations } from '../../actions';
+
 /**
 * @author
 * @function HomePage
 **/
+
 const User = (props) => {
     const { user, onClick } = props
     return (
@@ -21,6 +23,7 @@ const User = (props) => {
         </div>
     );
 }
+
 const HomePage = (props) => {
 
     const dispatch = useDispatch()
@@ -28,6 +31,8 @@ const HomePage = (props) => {
     const user = useSelector(state => state.user);
     const [chatStarted, setChatStarted] = useState(false)
     const [chatUser, setChatUser] = useState('')
+    const [message, setMessage] = useState('')
+    const [chatUserUid, setChatUserUid] = useState('')
     let unsubscribe
 
     useEffect(() => {
@@ -45,6 +50,22 @@ const HomePage = (props) => {
     const initChat = (user) => {
         setChatStarted(true)
         setChatUser(`${user.firstName} ${user.lastName}`)
+        setChatUserUid(user.uid)
+        dispatch(getRealtimeConversations({ uid_1: auth.uid, uid_2: user.uid }));
+    }
+
+    const submitMessage = (e) => {
+        const msgObj = {
+            user_uid_1: auth.uid,
+            user_uid_2: chatUserUid,
+            message
+        }
+        if (message !== "") {
+            dispatch(updateMessage(msgObj))
+            .then(() => {
+                setMessage('')
+              })
+        }
     }
 
     return (
@@ -68,15 +89,22 @@ const HomePage = (props) => {
                     </div>
                     <div className="messageSections">
                         {
-                            chatStarted ? <div style={{ textAlign: 'left' }}>
-                                <p className="messageStyle" >Hello User</p>
-                            </div> : null
+                            chatStarted ?
+                                user.conversations.map(con =>
+                                    <div  style={{ textAlign: con.user_uid_1 == auth.uid ? 'right' : 'left' }}>
+                                        <p key={con.uid} className="messageStyle" >{con.message}</p>
+                                    </div>)
+                                : null
                         }
                     </div>
                     {
                         chatStarted ? <div className="chatControls">
-                            <textarea />
-                            <button>Send</button>
+                            <textarea
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="write message"
+                            />
+                            <button onClick={submitMessage}>Send</button>
                         </div> : null
                     }
                 </div>

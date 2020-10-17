@@ -1,6 +1,5 @@
 import { auth, firestore } from 'firebase';
 import { authConstanst } from './constants';
-import { getRealtimeUsers } from './user.actions';
 
 export const signup = (user) => {
     return async (dispatch) => {
@@ -9,14 +8,12 @@ export const signup = (user) => {
         auth()
             .createUserWithEmailAndPassword(user.email, user.password)
             .then(data => {
-                console.log(data);
                 const currentUser = auth().currentUser;
                 const name = `${user.firstName} ${user.lastName}`;
                 currentUser.updateProfile({
                     displayName: name
                 })
                     .then(() => {
-                        //if you are here means it is updated successfully
                         db.collection('users')
                             .doc(data.user.uid)
                             .set({
@@ -35,14 +32,12 @@ export const signup = (user) => {
                                     email: user.email
                                 }
                                 localStorage.setItem('user', JSON.stringify(loggedInUser));
-                                console.log('User logged in successfully...!');
                                 dispatch({
                                     type: `${authConstanst.USER_LOGIN}_SUCCESS`,
                                     payload: { user: loggedInUser }
                                 })
                             })
                             .catch(error => {
-                                console.log(error);
                                 dispatch({
                                     type: `${authConstanst.USER_LOGIN}_FAILURE`,
                                     payload: { error }
@@ -89,7 +84,6 @@ export const signin = (user) => {
                     })
             })
             .catch(error => {
-                console.log(error);
                 dispatch({
                     type: `${authConstanst.USER_LOGIN}_FAILURE`,
                     payload: { error }
@@ -118,7 +112,6 @@ export const isLoggedInUser = () => {
 export const logout = (uid) => {
     return async dispatch => {
         dispatch({ type: `${authConstanst.USER_LOGOUT}_REQUEST` });
-        //Now lets logout user
         const db = firestore();
         db.collection('users')
             .doc(uid)
@@ -129,7 +122,6 @@ export const logout = (uid) => {
                 auth()
                     .signOut()
                     .then(() => {
-                        //successfully
                         localStorage.clear();
                         dispatch({ type: `${authConstanst.USER_LOGOUT}_SUCCESS` });
                     })
