@@ -62,7 +62,6 @@ export const signin = (user) => {
         auth()
             .signInWithEmailAndPassword(user.email, user.password)
             .then((data) => {
-                console.log(data);
                 const db = firestore();
                 db.collection('users')
                     .doc(data.user.uid)
@@ -73,7 +72,6 @@ export const signin = (user) => {
                         const name = data.user.displayName.split(" ");
                         const firstName = name[0];
                         const lastName = name[1];
-
                         const loggedInUser = {
                             firstName,
                             lastName,
